@@ -1,0 +1,11 @@
+sku,product_name,category,forecast_30,forecast_60,forecast_90
+BRA-0010,Category 2 Model 010,Category 2,74.2016,148.2161,222.2132
+BRA-0061,Category 3 Model 061,Category 3,72.2926,144.3427,216.4275
+BRA-0014,Category 4 Model 014,Category 4,70.4548,140.8974,211.4035
+BRA-0019,Category 1 Model 019,Category 1,64.8479,129.6922,194.3865
+BRA-0017,Category 2 Model 017,Category 2,63.8399,127.608,191.3877
+BRA-0060,Category 4 Model 060,Category 4,63.16,126.1577,189.265
+BRA-0057,Category 1 Model 057,Category 1,62.2719,124.5123,186.7123
+BRA-0078,Category 1 Model 078,Category 1,61.6436,123.2474,184.7243
+BRA-0042,Category 1 Model 042,Category 1,60.8698,121.7554,182.6036
+BRA-0027,Category 3 Model 027,Category 3,60.0025,119.9637,179.9076

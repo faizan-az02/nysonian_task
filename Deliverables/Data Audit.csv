@@ -1,0 +1,7 @@
+area,finding,decision_impact
+Sales,"Sparse order-line grain, not complete daily demand panel",Aggregate to SKU-warehouse-day and complete calendar
+Sales,Stockout sales are censored,Do not treat zero or low sales during stockout as zero demand
+Inventory,"Negative, stale, duplicate, and legacy-warehouse records exist",Flag inventory confidence before automated recommendation
+POs,Actual lead time differs from stated ETA,Use supplier actual p75 lead time for cover
+Promotions,Some expected lift values are missing,Impute for modeling; require human review for promo buys
+Products,"Active, discontinued, and planned SKUs are mixed",Exclude discontinued reorders and planned SKUs from training

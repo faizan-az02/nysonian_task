@@ -1,0 +1,292 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Supply Chain Forecast Dashboard</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="load-modal" id="dashboardNotice">
+    <div class="modal-card">
+      <h2>Before You Review</h2>
+      <ol>
+        <li>This dashboard is optimized for a laptop screen and is best reviewed on a laptop.</li>
+        <li>Please scroll to the end so you see every section and detail in the submission.</li>
+      </ol>
+      <button type="button" onclick="document.getElementById('dashboardNotice').classList.add('hidden')">Continue</button>
+    </div>
+  </div>
+
+  <header class="header">
+    <div class="title-card">
+      <p class="eyebrow">Supply Chain Decision Intelligence</p>
+      <h1>Forecast & Reorder Command Center</h1>
+      <p class="header-copy">Demand outlook, replenishment risk, and approval-ready purchase recommendations.</p>
+    </div>
+    <nav class="header-links" aria-label="Submission deliverable links">
+      <span>Deliverable links are here</span>
+      <div>
+        <a href="#" target="_blank" rel="noopener" aria-label="GitHub Repository">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.8a10.2 10.2 0 0 0-3.2 19.9c.5.1.7-.2.7-.5v-1.9c-2.8.6-3.4-1.2-3.4-1.2-.5-1.1-1.1-1.4-1.1-1.4-.9-.6.1-.6.1-.6 1 .1 1.6 1.1 1.6 1.1.9 1.5 2.4 1.1 3 .8.1-.7.4-1.1.7-1.3-2.2-.3-4.6-1.1-4.6-5a3.9 3.9 0 0 1 1-2.7 3.6 3.6 0 0 1 .1-2.7s.9-.3 2.8 1a9.5 9.5 0 0 1 5.2 0c2-1.3 2.8-1 2.8-1a3.6 3.6 0 0 1 .1 2.7 3.9 3.9 0 0 1 1 2.7c0 3.9-2.4 4.7-4.6 5 .4.3.7 1 .7 2v2.8c0 .3.2.6.7.5A10.2 10.2 0 0 0 12 1.8Z"/></svg>
+          <b>GitHub Repository</b>
+        </a>
+        <a href="#" target="_blank" rel="noopener" aria-label="Drive Deliverables Folder">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.2 3h7.6l7.1 12.3-3.8 6.7H11.5l3.8-6.7h7.6L15.8 3h-7.6Zm-.5.8 3.8 6.6L4.4 22 .6 15.3 7.7 3.8Zm4.4 7.5 3.8 6.7H1.6l3.8-6.7h6.7Z"/></svg>
+          <b>Drive Deliverables Folder</b>
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero-grid">
+      <article class="hero-card primary">
+        <span>90-Day Unconstrained Forecast</span>
+        <strong>8,866</strong>
+        <div class="range-pill">Range 6,468 - 11,264 units</div>
+      </article>
+      <article class="hero-card">
+        <span>Recommended Commitment</span>
+        <strong>$13,838</strong>
+        <div class="meter"><div style="width:2.8%"></div></div>
+        <small>$486,162 budget remaining</small>
+      </article>
+      <article class="hero-card">
+        <span>Container Slots</span>
+        <strong>2 / 2</strong>
+        <div class="meter amber"><div style="width:100%"></div></div>
+        <small>two supplier groupings selected</small>
+      </article>
+      <article class="hero-card approval">
+        <span>Approval Queue</span>
+        <strong>2</strong>
+        <div class="range-pill">PO creation blocked until approved</div>
+      </article>
+    </section>
+
+    <section class="forecast-cards">
+      <article class="forecast-card">
+        <div class="forecast-top"><span>30 days</span><strong>2,958</strong></div>
+        <div class="uncertainty"><div class="band"></div><div class="point"></div></div>
+        <div class="range-row"><span>2,142 low</span><span>3,774 high</span></div>
+      </article>
+      <article class="forecast-card">
+        <div class="forecast-top"><span>60 days</span><strong>5,913</strong></div>
+        <div class="uncertainty"><div class="band"></div><div class="point"></div></div>
+        <div class="range-row"><span>4,307 low</span><span>7,520 high</span></div>
+      </article>
+      <article class="forecast-card">
+        <div class="forecast-top"><span>90 days</span><strong>8,866</strong></div>
+        <div class="uncertainty"><div class="band"></div><div class="point"></div></div>
+        <div class="range-row"><span>6,468 low</span><span>11,264 high</span></div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-title">
+        <h2>Evaluator Deliverable Coverage</h2>
+        <span>where each requirement is addressed</span>
+      </div>
+      <div class="coverage-grid">
+        <div><b>Decision Brief</b><span>executive action, risks, assumptions</span></div>
+        <div><b>Analysis</b><span>analysis.py plus validation outputs</span></div>
+        <div><b>Output File</b><span>702 SKU-warehouse-horizon rows</span></div>
+        <div><b>Developer Handoff</b><span>data flow, controls, acceptance tests</span></div>
+        <div><b>Scenario Responses</b><span>five Section 8 answers included</span></div>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <article class="panel">
+        <div class="panel-title">
+          <h2>90-Day Forecast Mix</h2>
+          <span>warehouse demand share</span>
+        </div>
+        <div class="stack">
+          <div class="seg a" style="width:54.4%">Warehouse A 54%</div>
+          <div class="seg b" style="width:29.8%">B 30%</div>
+          <div class="seg c" style="width:15.7%">C 16%</div>
+        </div>
+        <div class="warehouse-list">
+          <div><b>Warehouse A</b><span>4,826 units</span></div>
+          <div><b>Warehouse B</b><span>2,646 units</span></div>
+          <div><b>Warehouse C</b><span>1,394 units</span></div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-title">
+          <h2>Risk Snapshot</h2>
+          <span>90-day SKU-warehouse view</span>
+        </div>
+        <div class="risk-cards">
+          <div class="risk critical"><strong>1</strong><span>Critical</span></div>
+          <div class="risk high"><strong>4</strong><span>High</span></div>
+          <div class="risk medium"><strong>0</strong><span>Medium</span></div>
+          <div class="risk low"><strong>229</strong><span>Low</span></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="grid two">
+      <article class="panel">
+        <div class="panel-title">
+          <h2>Demand & Model Method</h2>
+          <span>guardrails used</span>
+        </div>
+        <div class="method-grid">
+          <div><b>Stockouts</b><span>censored, not treated as zero demand</span></div>
+          <div><b>Promotions</b><span>historical lift de-adjusted</span></div>
+          <div><b>Returns</b><span>tracked separately from gross demand</span></div>
+          <div><b>Lifecycle</b><span>planned/discontinued SKUs controlled</span></div>
+          <div><b>Baseline</b><span>adjusted 180-day moving average</span></div>
+          <div><b>Challenger</b><span>recency and weekday weighted model</span></div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-title">
+          <h2>Required Output Fields</h2>
+          <span>covered in CSV output</span>
+        </div>
+        <div class="field-tags">
+          <span>SKU</span><span>Warehouse</span><span>Horizon</span><span>Point Forecast</span>
+          <span>Forecast Range</span><span>Available Inventory</span><span>Inbound Qty</span>
+          <span>Lead Time</span><span>Reorder Date</span><span>Recommended Qty</span>
+          <span>Purchase Cost</span><span>Risk Class</span><span>Reason Code</span>
+          <span>Assumptions</span><span>Approval Status</span>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-title">
+        <h2>Top SKU Forecast Ranking</h2>
+        <span>ranked by 90-day point forecast</span>
+      </div>
+      <div class="sku-rank">
+        <div class="rank-head"><span>SKU</span><span>90D Rank</span><span>30D</span><span>60D</span><span>90D</span></div>
+        <div class="rank-row"><strong>BRA-0010</strong><div class="rank-track"><div style="width:100%"></div></div><span>74</span><span>148</span><b>222</b></div>
+        <div class="rank-row"><strong>BRA-0061</strong><div class="rank-track"><div style="width:97.3%"></div></div><span>72</span><span>144</span><b>216</b></div>
+        <div class="rank-row"><strong>BRA-0014</strong><div class="rank-track"><div style="width:95.1%"></div></div><span>70</span><span>141</span><b>211</b></div>
+        <div class="rank-row"><strong>BRA-0019</strong><div class="rank-track"><div style="width:87.4%"></div></div><span>65</span><span>130</span><b>194</b></div>
+        <div class="rank-row"><strong>BRA-0017</strong><div class="rank-track"><div style="width:86.2%"></div></div><span>64</span><span>128</span><b>191</b></div>
+        <div class="rank-row"><strong>BRA-0060</strong><div class="rank-track"><div style="width:85.1%"></div></div><span>63</span><span>126</span><b>189</b></div>
+        <div class="rank-row"><strong>BRA-0057</strong><div class="rank-track"><div style="width:84.2%"></div></div><span>62</span><span>125</span><b>187</b></div>
+        <div class="rank-row"><strong>BRA-0078</strong><div class="rank-track"><div style="width:83.3%"></div></div><span>62</span><span>123</span><b>185</b></div>
+        <div class="rank-row"><strong>BRA-0042</strong><div class="rank-track"><div style="width:82.4%"></div></div><span>61</span><span>122</span><b>183</b></div>
+        <div class="rank-row"><strong>BRA-0027</strong><div class="rank-track"><div style="width:81.1%"></div></div><span>60</span><span>120</span><b>180</b></div>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <article class="panel">
+        <div class="panel-title">
+          <h2>Model Validation</h2>
+          <span>average WMAPE, lower is better</span>
+        </div>
+        <div class="model-compare">
+          <div class="model-row"><span>30D</span><div class="pair"><i class="base" style="width:100%">Baseline 32.1%</i><i class="challenger" style="width:86%">Challenger 27.6%</i></div></div>
+          <div class="model-row"><span>60D</span><div class="pair"><i class="base" style="width:91.9%">Baseline 29.5%</i><i class="challenger" style="width:84.7%">Challenger 27.2%</i></div></div>
+          <div class="model-row"><span>90D</span><div class="pair"><i class="base" style="width:86%">Baseline 27.6%</i><i class="challenger" style="width:84.1%">Challenger 27.0%</i></div></div>
+        </div>
+      </article>
+
+      <article class="panel action-panel">
+        <div class="panel-title">
+          <h2>Reorder Decision</h2>
+          <span>human-controlled purchase intent</span>
+        </div>
+        <div class="action-total">
+          <strong>$13,838</strong>
+          <span>recommended now</span>
+        </div>
+        <div class="action-meta">
+          <div><b>2</b><span>lines</span></div>
+          <div><b>120</b><span>units</span></div>
+          <div><b>$486k</b><span>budget left</span></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="panel-title">
+        <h2>Selected Reorders</h2>
+        <span>approval required before PO creation</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Slot</th>
+              <th>SKU</th>
+              <th>Warehouse</th>
+              <th>Supplier</th>
+              <th>Available</th>
+              <th>Inbound</th>
+              <th>90D Forecast</th>
+              <th>Buy Qty</th>
+              <th>Cost</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td>BRA-0021</td>
+              <td>Warehouse C</td>
+              <td>SUP-023</td>
+              <td>16</td>
+              <td>0</td>
+              <td>27</td>
+              <td>96</td>
+              <td>$13,350</td>
+              <td><span class="status">Pending approval</span></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td>BRA-0002</td>
+              <td>Warehouse A</td>
+              <td>SUP-015</td>
+              <td>5</td>
+              <td>0</td>
+              <td>20</td>
+              <td>24</td>
+              <td>$488</td>
+              <td><span class="status">Pending approval</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="grid two">
+      <article class="panel">
+        <div class="panel-title">
+          <h2>Exception & Approval Workflow</h2>
+          <span>automation boundary</span>
+        </div>
+        <div class="workflow">
+          <div><b>Automate</b><span>forecast refresh, inventory position, alerts, ranking, MOQ/budget/container checks</span></div>
+          <div><b>Manual Approval</b><span>PO creation, overrides, supplier changes, promo assumptions, expedite decisions</span></div>
+          <div><b>Blockers</b><span>stale inventory, missing joins, discontinued/planned SKU ambiguity, low confidence</span></div>
+        </div>
+      </article>
+
+      <article class="panel">
+        <div class="panel-title">
+          <h2>Developer Handoff Snapshot</h2>
+          <span>implementation-ready scope</span>
+        </div>
+        <div class="workflow">
+          <div><b>Sources</b><span>sales, inventory, POs, suppliers, promotions, products</span></div>
+          <div><b>Cadence</b><span>weekly recommendations, daily exception monitoring</span></div>
+          <div><b>Tests</b><span>no duplicate grain, no future leakage, no PO without approval</span></div>
+        </div>
+      </article>
+    </section>
+
+  </main>
+</body>
+</html>
