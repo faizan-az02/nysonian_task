@@ -2,13 +2,12 @@
 
 | Required Deliverable | File |
 |---|---|
-| HTML dashboard report | `HTML_Report/index.html` |
-| Decision brief | `Decision_Brief.docx` |
-| Analysis script | `analysis.py` |
-| Analysis guide | `Analysis_README.docx` |
-| Output file | `sku_warehouse_forecast_recommendation.xlsx`, `sku_warehouse_forecast_recommendation.csv` |
-| Developer handoff | `Developer_Handoff.docx` |
-| Written scenario responses | `Written_Scenario_Responses.docx` |
+| HTML Dashboard Report | `HTML_Report/index.html` |
+| Decision Brief | `Decision_Brief.docx` |
+| Analysis Script | `analysis.py` |
+| Output File | `sku_warehouse_forecast_recommendation.csv` |
+| Developer Handoff | `Developer_Handoff.docx` |
+| Written Scenario Responses | `Written_Scenario_Responses.docx` |
 
 ## Supporting Analysis Outputs
 
