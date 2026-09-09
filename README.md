@@ -16,5 +16,4 @@
 - `selected_sku_forecasts.csv`
 - `reorder_recommendations.csv`
 - `Supply Chain Assessment Data set.xlsx`
-- `requirements.txt`
-- `HTML_Report/styles.css`
+
