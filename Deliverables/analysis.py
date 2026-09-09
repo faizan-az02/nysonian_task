@@ -1052,16 +1052,29 @@ for sku in active_skus:
             target - position
         )
 
-        recommended_qty = (
-            0
-            if raw_need <= 0
-            else int(
-                math.ceil(
-                    raw_need
-                    / sku_moq
-                )
-                * sku_moq
+        candidate_type = "URGENT_SHORTAGE"
+        reason_code = "BUY_APPROVAL_REQUIRED"
+
+        if raw_need <= 0:
+            target_days = 180
+            target = forecast(
+                sku,
+                warehouse,
+                as_of,
+                target_days
             )
+            raw_need = max(
+                0,
+                target - position
+            )
+            candidate_type = "BUDGET_CAPACITY_FILL"
+            reason_code = "OPTIONAL_BUY_USES_REMAINING_BUDGET"
+
+        recommended_qty = int(
+            math.ceil(
+                raw_need / sku_moq
+            )
+            * sku_moq
         )
 
         if recommended_qty <= 0:
@@ -1097,6 +1110,13 @@ for sku in active_skus:
             + shortage_90
             * margin / 100
         )
+
+        if candidate_type == "BUDGET_CAPACITY_FILL":
+            priority = (
+                forecasts[90]
+                * max(margin, 0)
+                / 100
+            )
 
 
         candidates.append({
@@ -1152,6 +1172,12 @@ for sku in active_skus:
             "recommended_qty":
                 recommended_qty,
 
+            "candidate_type":
+                candidate_type,
+
+            "reason_code":
+                reason_code,
+
             "unit_cost":
                 product["unit_cost"],
 
@@ -1179,7 +1205,17 @@ for sku in active_skus:
 
 supplier_scores = defaultdict(float)
 
-for row in candidates:
+score_pool = [
+    row
+    for row in candidates
+    if row["candidate_type"]
+    == "URGENT_SHORTAGE"
+]
+
+if not score_pool:
+    score_pool = candidates
+
+for row in score_pool:
 
     supplier_scores[
         row["supplier"]
@@ -1221,7 +1257,11 @@ eligible_candidates = [
 
 eligible_candidates.sort(
     key=lambda row:
-        row["priority_score"],
+        (
+            row["candidate_type"]
+            == "URGENT_SHORTAGE",
+            row["priority_score"]
+        ),
     reverse=True
 )
 
@@ -1427,10 +1467,8 @@ for sku in sorted(active_skus):
                     risk,
 
                 "reason_code":
-                    (
-                        "BUY_APPROVAL_REQUIRED"
-                        if reorder
-                        else
+                    reorder.get(
+                        "reason_code",
                         "NO_REORDER_POSITION_SUFFICIENT"
                     ),
 
@@ -1543,6 +1581,12 @@ reorder_rows = [
 
         "recommended_qty":
             row["recommended_qty"],
+
+        "candidate_type":
+            row["candidate_type"],
+
+        "reason_code":
+            row["reason_code"],
 
         "unit_cost":
             row["unit_cost"],
