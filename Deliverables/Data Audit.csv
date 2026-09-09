@@ -1,7 +1,11 @@
-area,finding,decision_impact
-Sales,"Sparse order-line grain, not complete daily demand panel",Aggregate to SKU-warehouse-day and complete calendar
-Sales,Stockout sales are censored,Do not treat zero or low sales during stockout as zero demand
-Inventory,"Negative, stale, duplicate, and legacy-warehouse records exist",Flag inventory confidence before automated recommendation
-POs,Actual lead time differs from stated ETA,Use supplier actual p75 lead time for cover
-Promotions,Some expected lift values are missing,Impute for modeling; require human review for promo buys
-Products,"Active, discontinued, and planned SKUs are mixed",Exclude discontinued reorders and planned SKUs from training
+area,finding,count,pct_affected,decision_impact
+Sales,"Sparse order-line grain, not complete daily demand panel",92388,0.7231,Complete the SKU-warehouse-day calendar before forecasting
+Sales,Stockout sales are censored,32,0.0009,Impute demand on stockout days; do not treat low sales as low demand
+Sales,Return rows exist and should not be netted from gross demand by default,2593,0.0723,Keep returns as an exception/quality feature unless pre-fulfillment cancellation
+Inventory,"Negative balances found in on_hand, allocated, or available",11,0.0002,Flag inventory confidence before recommending purchase action
+Inventory,Duplicate SKU-warehouse-date inventory rows,5,0.0001,Deduplicate latest snapshot before calculating inventory position
+Inventory,Legacy warehouse naming appears,1,0.0,Normalize warehouse names before joins and reporting
+POs,Received POs arrived after stated ETA,377,0.6051,Use actual supplier p75 lead time rather than stated ETA only
+POs,Open or partially received POs require inbound netting,126,0.1892,Net remaining open PO quantity before recommending new buys
+Promotions,Promotion lift estimates are missing,14,0.1944,Impute category lift for modeling; require planner review for promo buys
+Products,"Active, discontinued, and planned SKUs are mixed",200,1,"Use lifecycle controls: 78 active, 5 discontinued, 117 planned"

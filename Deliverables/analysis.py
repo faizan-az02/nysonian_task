@@ -1,6 +1,6 @@
 import csv
 import math
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import date, datetime, timedelta
 from functools import lru_cache
 from pathlib import Path
@@ -1612,54 +1612,230 @@ reorder_rows = [
 # 14. AUDIT OUTPUT
 # ============================================================
 
+sales_panel_days = (
+    as_of - min_date
+).days + 1
+
+expected_sales_panel_rows = (
+    len(active_skus)
+    * len(warehouses)
+    * sales_panel_days
+)
+
+observed_sales_panel_rows = len({
+    (
+        row["sku"],
+        WAREHOUSE_ALIASES.get(
+            row["warehouse"],
+            row["warehouse"]
+        ),
+        as_date(row["date"])
+    )
+    for row in tables["Sales Daily"]
+    if row["sku"] in active_skus
+})
+
+inventory_keys = [
+    (
+        row["sku"],
+        WAREHOUSE_ALIASES.get(
+            row["warehouse"],
+            row["warehouse"]
+        ),
+        as_date(row["date"])
+    )
+    for row in tables["Inventory Daily"]
+]
+
+received_pos = [
+    row
+    for row in tables["Purchase Orders"]
+    if row.get("actual_receipt_date")
+]
+
+delayed_received_pos = [
+    row
+    for row in received_pos
+    if as_date(row["actual_receipt_date"])
+    > as_date(row["stated_eta"])
+]
+
+status_counts = Counter(
+    row["status"]
+    for row in tables["Products"]
+)
+
 audit_rows = [
-
     {
         "area": "Sales",
-        "finding":
-            "Sparse order-line grain, not complete daily demand panel",
-        "decision_impact":
-            "Aggregate to SKU-warehouse-day and complete calendar"
+        "finding": "Sparse order-line grain, not complete daily demand panel",
+        "count": expected_sales_panel_rows - observed_sales_panel_rows,
+        "pct_affected": (
+            (expected_sales_panel_rows - observed_sales_panel_rows)
+            / expected_sales_panel_rows
+        ),
+        "decision_impact": "Complete the SKU-warehouse-day calendar before forecasting"
     },
-
     {
         "area": "Sales",
-        "finding":
-            "Stockout sales are censored",
-        "decision_impact":
-            "Do not treat zero or low sales during stockout as zero demand"
+        "finding": "Stockout sales are censored",
+        "count": sum(
+            1
+            for row in tables["Sales Daily"]
+            if row.get("stockout_flag") == "Y"
+        ),
+        "pct_affected": (
+            sum(
+                1
+                for row in tables["Sales Daily"]
+                if row.get("stockout_flag") == "Y"
+            )
+            / len(tables["Sales Daily"])
+        ),
+        "decision_impact": "Impute demand on stockout days; do not treat low sales as low demand"
     },
-
+    {
+        "area": "Sales",
+        "finding": "Return rows exist and should not be netted from gross demand by default",
+        "count": sum(
+            1
+            for row in tables["Sales Daily"]
+            if (row.get("return_units") or 0) > 0
+        ),
+        "pct_affected": (
+            sum(
+                1
+                for row in tables["Sales Daily"]
+                if (row.get("return_units") or 0) > 0
+            )
+            / len(tables["Sales Daily"])
+        ),
+        "decision_impact": "Keep returns as an exception/quality feature unless pre-fulfillment cancellation"
+    },
     {
         "area": "Inventory",
-        "finding":
-            "Negative, stale, duplicate, and legacy-warehouse records exist",
-        "decision_impact":
-            "Flag inventory confidence before automated recommendation"
+        "finding": "Negative balances found in on_hand, allocated, or available",
+        "count": sum(
+            1
+            for row in tables["Inventory Daily"]
+            if any(
+                isinstance(row.get(column), (int, float))
+                and row.get(column) < 0
+                for column in ("on_hand", "allocated", "available")
+            )
+        ),
+        "pct_affected": (
+            sum(
+                1
+                for row in tables["Inventory Daily"]
+                if any(
+                    isinstance(row.get(column), (int, float))
+                    and row.get(column) < 0
+                    for column in ("on_hand", "allocated", "available")
+                )
+            )
+            / len(tables["Inventory Daily"])
+        ),
+        "decision_impact": "Flag inventory confidence before recommending purchase action"
     },
-
+    {
+        "area": "Inventory",
+        "finding": "Duplicate SKU-warehouse-date inventory rows",
+        "count": sum(
+            count - 1
+            for count in Counter(inventory_keys).values()
+            if count > 1
+        ),
+        "pct_affected": (
+            sum(
+                count - 1
+                for count in Counter(inventory_keys).values()
+                if count > 1
+            )
+            / len(tables["Inventory Daily"])
+        ),
+        "decision_impact": "Deduplicate latest snapshot before calculating inventory position"
+    },
+    {
+        "area": "Inventory",
+        "finding": "Legacy warehouse naming appears",
+        "count": sum(
+            1
+            for row in tables["Inventory Daily"] + tables["Sales Daily"]
+            if row.get("warehouse") in WAREHOUSE_ALIASES
+        ),
+        "pct_affected": (
+            sum(
+                1
+                for row in tables["Inventory Daily"] + tables["Sales Daily"]
+                if row.get("warehouse") in WAREHOUSE_ALIASES
+            )
+            / (
+                len(tables["Inventory Daily"])
+                + len(tables["Sales Daily"])
+            )
+        ),
+        "decision_impact": "Normalize warehouse names before joins and reporting"
+    },
     {
         "area": "POs",
-        "finding":
-            "Actual lead time differs from stated ETA",
-        "decision_impact":
-            "Use supplier actual p75 lead time for cover"
+        "finding": "Received POs arrived after stated ETA",
+        "count": len(delayed_received_pos),
+        "pct_affected": (
+            len(delayed_received_pos)
+            / len(received_pos)
+            if received_pos
+            else 0
+        ),
+        "decision_impact": "Use actual supplier p75 lead time rather than stated ETA only"
     },
-
+    {
+        "area": "POs",
+        "finding": "Open or partially received POs require inbound netting",
+        "count": sum(
+            1
+            for row in tables["Purchase Orders"]
+            if row["status"] in {"Open", "Partially Received"}
+        ),
+        "pct_affected": (
+            sum(
+                1
+                for row in tables["Purchase Orders"]
+                if row["status"] in {"Open", "Partially Received"}
+            )
+            / len(tables["Purchase Orders"])
+        ),
+        "decision_impact": "Net remaining open PO quantity before recommending new buys"
+    },
     {
         "area": "Promotions",
-        "finding":
-            "Some expected lift values are missing",
-        "decision_impact":
-            "Impute for modeling; require human review for promo buys"
+        "finding": "Promotion lift estimates are missing",
+        "count": sum(
+            1
+            for row in tables["Promotions"]
+            if row.get("expected_lift_pct") in (None, "")
+        ),
+        "pct_affected": (
+            sum(
+                1
+                for row in tables["Promotions"]
+                if row.get("expected_lift_pct") in (None, "")
+            )
+            / len(tables["Promotions"])
+        ),
+        "decision_impact": "Impute category lift for modeling; require planner review for promo buys"
     },
-
     {
         "area": "Products",
-        "finding":
-            "Active, discontinued, and planned SKUs are mixed",
-        "decision_impact":
-            "Exclude discontinued reorders and planned SKUs from training"
+        "finding": "Active, discontinued, and planned SKUs are mixed",
+        "count": len(tables["Products"]),
+        "pct_affected": 1,
+        "decision_impact": (
+            f"Use lifecycle controls: "
+            f"{status_counts.get('Active', 0)} active, "
+            f"{status_counts.get('Discontinued', 0)} discontinued, "
+            f"{status_counts.get('Planned', 0)} planned"
+        )
     }
 ]
 
@@ -1673,7 +1849,7 @@ outputs = {
     "selected_sku_forecasts.csv": forecast_rows,
     "reorder_recommendations.csv": reorder_rows,
     "sku_warehouse_forecast_recommendation.csv": required_rows,
-    "data_audit_summary.csv": audit_rows
+    "Data Audit.csv": audit_rows
 }
 
 for filename, rows in outputs.items():
