@@ -696,6 +696,35 @@ def latest_available(
     )
 
 
+def projected_stockout_date(
+    cutoff,
+    inventory_position,
+    forecast_90
+):
+
+    daily_rate = forecast_90 / 90
+
+    if daily_rate <= 0:
+        return ""
+
+    days_until_stockout = int(
+        math.floor(
+            inventory_position
+            / daily_rate
+        )
+    ) + 1
+
+    if days_until_stockout > 90:
+        return ""
+
+    return (
+        cutoff
+        + timedelta(
+            days=days_until_stockout
+        )
+    ).isoformat()
+
+
 # ============================================================
 # 8. MODEL VALIDATION
 # ============================================================
@@ -1053,7 +1082,7 @@ for sku in active_skus:
         )
 
         candidate_type = "URGENT_SHORTAGE"
-        reason_code = "BUY_APPROVAL_REQUIRED"
+        reason_code = ""
 
         if raw_need <= 0:
             target_days = 180
@@ -1068,7 +1097,7 @@ for sku in active_skus:
                 target - position
             )
             candidate_type = "BUDGET_CAPACITY_FILL"
-            reason_code = "OPTIONAL_BUY_USES_REMAINING_BUDGET"
+            reason_code = "BUDGET_CAPACITY_FILL"
 
         recommended_qty = int(
             math.ceil(
@@ -1095,6 +1124,16 @@ for sku in active_skus:
             0,
             forecasts[90] - position
         )
+
+        if candidate_type == "URGENT_SHORTAGE":
+            if shortage_30 > 0:
+                reason_code = "SHORTAGE_30D"
+            elif shortage_60 > 0:
+                reason_code = "SHORTAGE_60D"
+            elif shortage_90 > 0:
+                reason_code = "SHORTAGE_90D"
+            else:
+                reason_code = "LEAD_TIME_PLUS_SAFETY_STOCK_BREACH"
 
 
         margin = (
@@ -1371,6 +1410,18 @@ for sku in sorted(active_skus):
         else:
             risk = "Low"
 
+        stockout_date = projected_stockout_date(
+            as_of,
+            position,
+            forecasts[90]
+        )
+
+        no_reorder_reason = (
+            "NO_REORDER_CONSTRAINT_PRIORITY_LIMIT"
+            if risk != "Low"
+            else "NO_REORDER_POSITION_SUFFICIENT"
+        )
+
 
         for horizon in HORIZONS:
 
@@ -1469,11 +1520,11 @@ for sku in sorted(active_skus):
                 "reason_code":
                     reorder.get(
                         "reason_code",
-                        "NO_REORDER_POSITION_SUFFICIENT"
+                        no_reorder_reason
                     ),
 
                 "projected_stockout_date":
-                    "",
+                    stockout_date,
 
                 "container_slot":
                     reorder.get(
@@ -1487,7 +1538,7 @@ for sku in sorted(active_skus):
                         "promo de-lifted; "
                         "stockout days censored; "
                         "MOQ from historical min PO; "
-                        "two supplier/container slots."
+                        "two supplier groupings used as container proxy because CBM/weight/case-pack data is unavailable."
                     ),
 
                 "human_approval_status":

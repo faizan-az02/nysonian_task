@@ -98,6 +98,19 @@
       </div>
     </section>
 
+    <section class="panel">
+      <div class="panel-title">
+        <h2>Prototype Boundaries</h2>
+        <span>known gaps and production upgrade path</span>
+      </div>
+      <div class="method-grid">
+        <div><b>Container Proxy</b><span>two supplier groupings are used because CBM, weight, case pack, lane, and consolidation rules are unavailable</span></div>
+        <div><b>Lost Demand</b><span>stockout sales are a lower bound; production should estimate latent demand from uncensored weekday, promo, SKU, and category patterns</span></div>
+        <div><b>Optimization</b><span>prototype uses ranked greedy selection; production should use knapsack or MILP under budget, MOQ, lead time, lifecycle, and true container constraints</span></div>
+        <div><b>Uncertainty</b><span>prototype ranges use rolling-validation error; production should calibrate residual quantiles by horizon, volume, intermittency, and category</span></div>
+      </div>
+    </section>
+
     <section class="grid two">
       <article class="panel">
         <div class="panel-title">
@@ -244,7 +257,7 @@
               <td>27</td>
               <td>96</td>
               <td>$13,350</td>
-              <td>Urgent</td>
+              <td>60D shortage</td>
               <td><span class="status">Pending approval</span></td>
             </tr>
             <tr>
@@ -257,7 +270,7 @@
               <td>20</td>
               <td>24</td>
               <td>$488</td>
-              <td>Urgent</td>
+              <td>30D shortage</td>
               <td><span class="status">Pending approval</span></td>
             </tr>
             <tr>
@@ -270,7 +283,7 @@
               <td>49</td>
               <td>108</td>
               <td>$3,538</td>
-              <td>Urgent</td>
+              <td>Lead-time+safety</td>
               <td><span class="status">Pending approval</span></td>
             </tr>
             <tr>
@@ -283,7 +296,7 @@
               <td>53</td>
               <td>144</td>
               <td>$4,742</td>
-              <td>Urgent</td>
+              <td>Lead-time+safety</td>
               <td><span class="status">Pending approval</span></td>
             </tr>
             <tr>
